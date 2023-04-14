@@ -1,4 +1,5 @@
-﻿using Tao.FreeGlut;
+﻿using System;
+using Tao.FreeGlut;
 using Tao.OpenGl;
 
 namespace Car_Animation
@@ -39,36 +40,28 @@ namespace Car_Animation
         //TODO - Desenhar uma nuvem com mais detalhes
         static void desenhaNuvem()
         {
-            // Desenha uma nuvem com bordas redondas
-            Gl.glBegin(Gl.GL_POLYGON);
             Gl.glColor3f(1.0f, 1.0f, 1.0f);
-            Gl.glVertex2f(0.0f, 0.3f);
-            Gl.glVertex2f(0.1f, 0.4f);
-            Gl.glVertex2f(0.3f, 0.4f);
-            Gl.glVertex2f(0.4f, 0.3f);
-            Gl.glVertex2f(0.3f, 0.2f);
-            Gl.glVertex2f(0.1f, 0.2f);
 
-            // Adiciona curvas bezier para suavizar as bordas
-            Gl.glVertex2f(0.05f, 0.25f);
-            Gl.glVertex2f(0.05f, 0.35f);
-            Gl.glVertex2f(0.1f, 0.35f);
-            Gl.glVertex2f(0.15f, 0.35f);
-            Gl.glVertex2f(0.2f, 0.35f);
-            Gl.glVertex2f(0.25f, 0.35f);
-            Gl.glVertex2f(0.3f, 0.35f);
-            Gl.glVertex2f(0.35f, 0.35f);
-            Gl.glVertex2f(0.35f, 0.3f);
-            Gl.glVertex2f(0.35f, 0.25f);
-            Gl.glVertex2f(0.3f, 0.2f);
-            Gl.glVertex2f(0.25f, 0.2f);
-            Gl.glVertex2f(0.2f, 0.2f);
-            Gl.glVertex2f(0.15f, 0.2f);
-            Gl.glVertex2f(0.1f, 0.2f);
-            Gl.glVertex2f(0.05f, 0.2f);
-            Gl.glVertex2f(0.05f, 0.25f);
+            //Faço 4 circulos aqui praticamentes juntos mas separados na localidades. 
+            Gl.glPushMatrix();
+            Gl.glTranslatef(-0.2f, 0.2f, 0.0f);
+            Glut.glutSolidSphere(0.15f, 20, 20);
+            Gl.glPopMatrix();
 
-            Gl.glEnd();
+            Gl.glPushMatrix();
+            Gl.glTranslatef(-0.1f, 0.3f, 0.0f);
+            Glut.glutSolidSphere(0.2f, 20, 20);
+            Gl.glPopMatrix();
+
+            Gl.glPushMatrix();
+            Gl.glTranslatef(0.1f, 0.3f, 0.0f);
+            Glut.glutSolidSphere(0.2f, 20, 20);
+            Gl.glPopMatrix();
+
+            Gl.glPushMatrix();
+            Gl.glTranslatef(0.2f, 0.2f, 0.0f);
+            Glut.glutSolidSphere(0.15f, 20, 20);
+            Gl.glPopMatrix();
         }
 
         static void desenha()
@@ -85,7 +78,6 @@ namespace Car_Animation
         static void fundo(CorFundo corFundo)
         {
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
-
             ConfigurarHorarioDia();
 
             DesenharRodovia();
@@ -102,7 +94,7 @@ namespace Car_Animation
 
         static void Timer(int value)
         {
-            const int num_steps = 60; // número de passos para a transição completa
+            const int num_steps = 100; // número de passos para a transição completa
             float t = (float)step / num_steps; // progresso da transição, entre 0 e 1
             CorFundo corAnterior = corFundo;
             CorFundo corNova = null;
@@ -249,6 +241,8 @@ namespace Car_Animation
             Gl.glVertex2f(0.0f, 0.2f);
             Gl.glVertex2f(1.0f, 0.2f);
             Gl.glEnd();
+
+            configurarAstroCeu();
         }
 
         static void DesenharRodovia()
@@ -264,7 +258,7 @@ namespace Car_Animation
 
             float lineWidth = 0.11f; // largura da linha
             float gapWidth = 0.05f; // largura do espaço entre as linhas
-            int numLines = 11; // número de linhas que serão desenhadas
+            int numLines = 7; // número de linhas que serão desenhadas
 
             // loop para criar as linhas tracejadas
             for (int i = 0; i < numLines; i++)
@@ -290,6 +284,19 @@ namespace Car_Animation
             }
 
             Gl.glEnd();
+        }
+
+        static void configurarAstroCeu()
+        {
+            if (horario == 1 || horario == 2)
+                Gl.glColor3f(0.8f, 0.8f, 0.8f); //SOL - AMARELO
+            else
+                Gl.glColor3f(1.0f, 1.0f, 0.0f); //LUA - CINZA CLARO
+
+            Gl.glPushMatrix();
+            Gl.glTranslatef(0.5f, 0.9f, 0.0f); 
+            Glu.gluDisk(Glu.gluNewQuadric(), 0, 0.15f, 32, 1); //Pelo que entendi, desenha um circulo com raio de 0.1f e 32 de segmento
+            Gl.glPopMatrix(); 
         }
      }
 }
